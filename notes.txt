@@ -1,0 +1,2 @@
+assigned certain channels to watch ratings in
+- count ratings per person, see who's most popular
