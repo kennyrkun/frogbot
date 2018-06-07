@@ -16,23 +16,26 @@ def getRandomFroggyQuote():
 @client.event
 async def on_ready():
 	print("logged in as " + client.user.name + " (" + client.user.id + ")")
+	await client.send_message(client.get_channel("332310228890681345"), "yea what's up :white_check_mark:")
+	# TODO: have a configuration file set for bot, where this is read from.
 
 @client.event
 async def on_message(message):
 	print("rec: " + message.content)
 
-	if message.content.startswith(botCommandPrefix + "sins"):
-		await client.send_message(message.channel, "I heard Minecraft?")
+	# TODO: this
+#	if message.content.startswith(botCommandPrefix + "sins"):
+#		await client.send_message(message.channel, "I heard Minecraft?")
 
 	if message.content.startswith(botCommandPrefix + "fcuk"):
 		await client.send_message(message.channel, getRandomFroggyQuote())
 
-	if message.content.startswith(botCommandPrefix + "what"):
-		await client.send_message(message.channel, "what the fuck do you want?")
+#	if message.content.startswith(botCommandPrefix + "what"):
+#		await client.send_message(message.channel, "what the fuck do you want?")
 
-	if message.content.startswith(botCommandPrefix + "setgame"):
-		await client.send_message(message.channel, "test")
-		await client.change_presence(game=discord.Game(name='something goes here'))
+#	if message.content.startswith(botCommandPrefix + "setgame"):
+#		await client.send_message(message.channel, "test")
+#		await client.change_presence(game=discord.Game(name='something goes here'))
 
 print("Starting with ", len(sys.argv), " arguments.")
 print(str(sys.argv))
