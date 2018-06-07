@@ -8,24 +8,20 @@ authTokenLocation = "./token.txt"
 frogQuotesLocation = ".resources/frogquotes.txt"
 botCommandPrefix = "!"
 
-def getRandomFroggyQuote(path):
-	return random.choice(open(path).readlines())
+def getRandomFroggyQuote():	
+	return random.choice(open(frogQuotesLocation).readlines())
 
 @client.event
 async def on_ready():
-	print('Logged in as:')
-	print(client.user.name)
-	print(client.user.id)
-	print('------')
+	print('logged in as ' + client.user.name + "(" + client.user.id + ")")
 
 @client.event
 async def on_message(message):
 	if message.content.startswith(botCommandPrefix + "sins"):
 		await client.send_message(message.channel, "I heard Minecraft?")
 	
-	if message.content.startswith(botCommandPrefix + "frog"):
-		#await client.send_message(message.channel, getRandomFroggyQuote(frogQuotesLocation))
-		await client.send_message(message.channel, "insert frog quote")
+	if message.content.startswith(botCommandPrefix + "fcuk"):
+		await client.send_message(message.channel, getRandomFroggyQuote())
 
 print("Starting with ", len(sys.argv), " arguments.")
 print(str(sys.argv))
