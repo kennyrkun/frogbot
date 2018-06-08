@@ -12,29 +12,23 @@ botControllerRole = None
 froggyQuotesLocation = None
 
 def getConfiguration():
-	getConfig = open("./bot.conf", "r")
-	
-#	TODO: find a better way to do this
-	global botAuthTokenLocation
-	botAuthTokenLocation = getConfig.readline()
-	global botHomeChannelID
-	botHomeChannelID  = getConfig.readline()
-	global botControllerRole
-	botControllerRole = getConfig.readline()
-	global botCommandPrefix
-	botCommandPrefix = getConfig.readline()
-	global froggyQuotesLocation
-	froggyQuotesLocation = getConfig.readline()
+#	getConfig = open("./bot.conf", "r")
 
+	global botHomeChannelID = "454470370817343488"
+	global botControllerRole = "Frog"
+	global botCOmmandPrefix = "!"
+	global froggyQuotesLocation = "./resources/frogquotes.txt"
+
+	print(botAuthTokenLocation)
 	print("loaded configuration")
 
 def getRandomFroggyQuote():
-	return random.choice(open(froggyQuotesLocation).read().splitlines())
+	return random.choice(open(frogQuotesLocation).read().splitlines())
 
 @client.event
 async def on_ready():
 	print("logged in as " + client.user.name + " (" + client.user.id + ")")
-	await client.send_message(client.get_channel(botHomeChannelID), "yea what's up? :white_check_mark:")
+	await client.send_message(client.get_channel(frogHomeChannelID), "yea what's up? :white_check_mark:")
 
 @client.event
 async def on_message(message):
@@ -59,6 +53,7 @@ print("Starting with ", len(sys.argv), " arguments.")
 print(str(sys.argv))
 
 getConfiguration()
+print(botAuthTokenLocation)
 getAuthToken = open(botAuthTokenLocation, "r") #opens file at the path of authTokenLocation, in read mode
 client.run(getAuthToken.read()) # reads the file and uses whatever is in at the auth toeken
 sys.exit()
