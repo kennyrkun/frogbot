@@ -4,19 +4,38 @@ import sys
 import random
 
 client = discord.Client()
-authTokenLocation = "./token.txt"
-frogQuotesLocation = "./resources/frogquotes.txt"
-botCommandPrefix = "!"
-frogHomeChannelID = "454470370817343488"
-botControllerRole = "Frog"
+
+botAuthTokenLocation = None
+botCommandPrefix = None
+botHomeChannelID = None
+botControllerRole = None
+froggyQuotesLocation = None
+
+def getConfiguration():
+#	getConfig = open("./bot.conf", "r")
+
+	# TODO; find a prettier way to do this
+	global botAuthTokenLocation
+	botAuthTokenLocation = "./token.txt"
+	global botHomeChannelID
+	botHomeChannelID  = "454470370817343488"
+	global botControllerRole
+	botControllerRole = "Frog"
+	global botCommandPrefix
+	botCommandPrefix = "!"
+	global froggyQuotesLocation
+	froggyQuotesLocation = "./resources/frogquotes.txt"
+
+	print(botAuthTokenLocation)
+	print("loaded configuration")
 
 def getRandomFroggyQuote():
-	return random.choice(open(frogQuotesLocation).read().splitlines())
+	return random.choice(open(froggyQuotesLocation).read().splitlines())
 
 @client.event
 async def on_ready():
 	print("logged in as " + client.user.name + " (" + client.user.id + ")")
-	await client.send_message(client.get_channel(frogHomeChannelID), "yea what's up? :white_check_mark:")
+	await client.send_message(client.get_channel(botHomeChannelID), "yea what's up? :white_check_mark:")
 
 @client.event
 async def on_message(message):
@@ -40,6 +59,8 @@ async def on_message(message):
 print("Starting with ", len(sys.argv), " arguments.")
 print(str(sys.argv))
 
-getAuthToken = open(authTokenLocation, "r") #opens file at the path of authTokenLocation, in read mode
+getConfiguration()
+print(botAuthTokenLocation)
+getAuthToken = open(botAuthTokenLocation, "r") #opens file at the path of authTokenLocation, in read mode
 client.run(getAuthToken.read()) # reads the file and uses whatever is in at the auth toeken
 sys.exit()
