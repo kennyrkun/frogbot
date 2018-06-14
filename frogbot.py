@@ -13,18 +13,18 @@ froggyQuotesLocation = None
 
 def getConfiguration():
 	getConfig = open("./bot.conf", "r")
-	
+
 #	TODO: find a better way to do this
 	global botAuthTokenLocation
-	botAuthTokenLocation = getConfig.readline()
+	botAuthTokenLocation = getConfig.readline().rstrip()
 	global botHomeChannelID
-	botHomeChannelID  = getConfig.readline()
+	botHomeChannelID  = getConfig.readline().rstrip()
 	global botControllerRole
-	botControllerRole = getConfig.readline()
+	botControllerRole = getConfig.readline().rstrip()
 	global botCommandPrefix
-	botCommandPrefix = getConfig.readline()
+	botCommandPrefix = getConfig.readline().rstrip()
 	global froggyQuotesLocation
-	froggyQuotesLocation = getConfig.readline()
+	froggyQuotesLocation = getConfig.readline().rstrip()
 
 	print("loaded configuration")
 
