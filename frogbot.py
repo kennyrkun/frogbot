@@ -2,34 +2,41 @@ import discord
 import asyncio
 import sys
 import random
+import configparser
 
 client = discord.Client()
 
-botAuthTokenLocation = None
-botCommandPrefix = None
+botAuthTokenPath = None
 botHomeChannelID = None
 botControllerRole = None
-froggyQuotesLocation = None
+botCommandPrefix = None
+froggyQuotesPath = None
 
 def getConfiguration():
-	getConfig = open("./bot.conf", "r")
-
-#	TODO: find a better way to do this
-	global botAuthTokenLocation
-	botAuthTokenLocation = getConfig.readline().rstrip()
+	global botAuthTokenPath
 	global botHomeChannelID
-	botHomeChannelID  = getConfig.readline().rstrip()
 	global botControllerRole
-	botControllerRole = getConfig.readline().rstrip()
 	global botCommandPrefix
-	botCommandPrefix = getConfig.readline().rstrip()
-	global froggyQuotesLocation
-	froggyQuotesLocation = getConfig.readline().rstrip()
+	global froggyQuotesPath
 
-	print("loaded configuration")
+	config = configparser.ConfigParser()
+	config.read('./bot.conf')
+
+#	config['FROG_CONFIG'] = {'TokenPath': "./token.txt",
+#							'BotHomeChannelID': "454470370817343488",
+#							'BotControllerRole': "Frog",
+#							'BotCommandPrefix': "!",
+#							'FroggyQuotesPath': "./resources/frogquotes.txt"
+#							}
+
+	bothAuthTokenPath = config['FROG_CONFIG']['TokenPath']
+	botHomeChannelID = config['FROG_CONFIG']['BotHomeChannelID']
+	botControllerRole = config['FROG_CONFIG']['BotControllerRole']
+	botCommandPrefix = config['FROG_CONFIG']['BotCommandPrefix']
+	froggyQuotesPath = config['FROG_CONFIG']['FroggyQuotesPath']
 
 def getRandomFroggyQuote():
-	return random.choice(open(froggyQuotesLocation).read().splitlines())
+	return random.choice(open(froggyQuotesPath).read().splitlines())
 
 @client.event
 async def on_ready():
@@ -59,6 +66,6 @@ print("Starting with ", len(sys.argv), " arguments.")
 print(str(sys.argv))
 
 getConfiguration()
-getAuthToken = open(botAuthTokenLocation, "r") #opens file at the path of authTokenLocation, in read mode
+getAuthToken = open(botAuthTokenPath, "r") #opens file at the path of authTokenPath, in read mode
 client.run(getAuthToken.read()) # reads the file and uses whatever is in at the auth toeken
 sys.exit()
