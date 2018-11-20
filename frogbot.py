@@ -20,7 +20,7 @@ def getConfiguration():
 	global froggyQuotesPath
 
 	config = configparser.ConfigParser()
-	config.read('./bot.conf')
+	config.read('./home/pi/frogbot/bot.conf')
 
 #	config['FROG_CONFIG'] = {'TokenPath': "./token.txt",
 #							'BotHomeChannelID': "454470370817343488",
@@ -29,7 +29,7 @@ def getConfiguration():
 #							'FroggyQuotesPath': "./resources/frogquotes.txt"
 #							}
 
-	botAuthTokenPath = config['FROG_CONFIG']['TokenPath']
+	botAuthTokenPath = config['FROG_CONFIG']['BotAuthTokenPath']
 	botHomeChannelID = config['FROG_CONFIG']['BotHomeChannelID']
 	botControllerRole = config['FROG_CONFIG']['BotControllerRole']
 	botCommandPrefix = config['FROG_CONFIG']['BotCommandPrefix']
