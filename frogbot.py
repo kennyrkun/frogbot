@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import sys
+import os
 import random
 import configparser
 
@@ -8,7 +9,7 @@ client = discord.Client()
 botConfig = configparser.ConfigParser()
 config = configparser.ConfigParser()
 
-botVersion = 6.0
+botVersion = "6.2.2"
 
 botAuthTokenPath = None
 botHomeChannelID = None
@@ -153,8 +154,14 @@ async def on_server_join(server):
 @client.event
 async def on_message(message):
 	try:
+		#try:
+		#	print(message.user.name + "#" + message.user.discriminator + ": " + message.message)
+		#except:
+		#	print(message.user.id + " does not want to be printed in the terminal!")
+			
 		if message.content.startswith(botCommandPrefix + "help"):
 			await client.send_message(message.channel, "List of commands:\n\n`!help` - this dialog.\n`!fcuk` - responds with a random frog quote\n`!roll` - rolls a dice with the specified number of sides\narguments:\nsides: number of sides on the die\nmodifier: DnD modifier\n`!check` - DnD skill check\ninternally calls `!roll 20 [modifier]`\n`!percent` - random percent between 0 and 100.\n`!setplaying` - sets the playing status for the bot\n\nfrogbot version " + str(botVersion))
+#			await client.send_message(message.channel, "List of commands:\n\n`!help` - this dialog.\n`!fcuk` - responds with a random frog quote\n`!roll` - rolls a dice with the specified number of sides\narguments:\nsides: number of sides on the die\nmodifier: DnD modifier\n`!check` - DnD skill check\ninternally calls `!roll 20 [modifier]`\n`!percent` - random percent between 0 and 100.\n`!setplaying` - sets the playing status for the bot\n`!restart` - restarts the bot\n\nfrogbot version " + str(botVersion))
 			return
 
 		if message.content.startswith(botCommandPrefix + "fcuk"):
@@ -196,6 +203,16 @@ async def on_message(message):
 				await client.send_message(message.channel, "no game name provided")
 				
 			return
+			
+#		if message.content.startswith("!restart"):
+#			await client.send_message(message.channel, "bye bye :wave::skin-tone-2:")
+			
+#			os.fsync()
+			
+#			os.execv("./frogbot.py", sys.argv)
+#			sys.exit()
+#			return
+			
 	except Exception as exception:
 		await client.send_message(message.channel, ":bangbang: Exception in on_message: `" + exception.__class__.__name__ + '`:\n```' + str(exception) + "```")
 		return
