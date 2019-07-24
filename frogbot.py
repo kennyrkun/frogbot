@@ -124,7 +124,7 @@ def percent():
 
 @client.event
 async def on_ready():
-#	print("logged in as " + client.user.name + " (" + client.user.id + ")")
+	print("logged in as " + client.user.name + " (" + client.user.id + ")")
 	await client.change_presence(game=discord.Game(name = "froggy being a fool", type = 3))
 	
 	try:
@@ -144,7 +144,7 @@ async def on_server_join(server):
 				if not c.permissions_for(server.me).send_messages:
 					continue
 				
-		await client.send_message(c, "yea what's up? :white_check_mark: (v" + str(botVersion) + ")")
+		#await client.send_message(c, "yea what's up? :white_check_mark:")
 		
 	# TODO: include more information about server
 	except Exception as exception:
@@ -163,31 +163,25 @@ async def on_message(message):
 			await client.send_message(message.channel, "List of commands:\n\n`!help` - this dialog.\n`!fcuk` - responds with a random frog quote\n`!roll` - rolls a dice with the specified number of sides\narguments:\nsides: number of sides on the die\nmodifier: DnD modifier\n`!check` - DnD skill check\ninternally calls `!roll 20 [modifier]`\n`!percent` - random percent between 0 and 100.\n`!setplaying` - sets the playing status for the bot\n\nfrogbot version " + str(botVersion))
 #			await client.send_message(message.channel, "List of commands:\n\n`!help` - this dialog.\n`!fcuk` - responds with a random frog quote\n`!roll` - rolls a dice with the specified number of sides\narguments:\nsides: number of sides on the die\nmodifier: DnD modifier\n`!check` - DnD skill check\ninternally calls `!roll 20 [modifier]`\n`!percent` - random percent between 0 and 100.\n`!setplaying` - sets the playing status for the bot\n`!restart` - restarts the bot\n\nfrogbot version " + str(botVersion))
 			return
-
-		if message.content.startswith(botCommandPrefix + "fcuk"):
+		elif message.content.startswith(botCommandPrefix + "fcuk"):
 			await client.send_message(message.channel, getRandomFroggyQuote())
 			return
-
 	#	TODO: this
 	#	if message.content.startswith(botCommandPrefix + "sins"):
 	#		await client.send_message(message.channel, "I heard Minecraft?")
 	#		return
-
-		if message.content.startswith(botCommandPrefix + "check"):
+		elif message.content.startswith(botCommandPrefix + "check"):
 			await client.send_message(message.channel, abilityCheck(message.content))
 			return
-
-		if message.content.startswith(botCommandPrefix + "roll"):
+		elif message.content.startswith(botCommandPrefix + "roll"):
 			await client.send_message(message.channel, rollDice(message.content))
 			return
-
-		if message.content.startswith(botCommandPrefix + "percent"):
+		elif message.content.startswith(botCommandPrefix + "percent"):
 			await client.send_message(message.channel, str(percent()) + "%")
 			return
-
 	#	TODO: restrict this to admins
 	#	TODO: !setwatching
-		if message.content.startswith(botCommandPrefix + "setplaying"):
+		elif message.content.startswith(botCommandPrefix + "setplaying"):
 			# strip the first word
 			string = message.content.split(' ', 1) # skip first word ("!setplaying")
 			
@@ -203,8 +197,7 @@ async def on_message(message):
 				await client.send_message(message.channel, "no game name provided")
 				
 			return
-			
-#		if message.content.startswith("!restart"):
+#		else if message.content.startswith("!restart"):
 #			await client.send_message(message.channel, "bye bye :wave::skin-tone-2:")
 			
 #			os.fsync()
@@ -212,7 +205,8 @@ async def on_message(message):
 #			os.execv("./frogbot.py", sys.argv)
 #			sys.exit()
 #			return
-			
+#		else:
+#			await client.send_message(message.channel, "what")
 	except Exception as exception:
 		await client.send_message(message.channel, ":bangbang: Exception in on_message: `" + exception.__class__.__name__ + '`:\n```' + str(exception) + "```")
 		return
