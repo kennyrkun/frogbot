@@ -1,4 +1,7 @@
+from dnd import dice
+
 import discord
+
 import asyncio
 import sys
 import os
@@ -18,6 +21,8 @@ botCommandPrefix = None
 froggyQuotesPath = None
 
 workingPath = "./"
+
+# create and save configuration files for each server when it joins them
 
 def getBotConfiguration():
 	global botAuthTokenPath
@@ -52,73 +57,6 @@ def getServerConfigOption(serverID, option):
 def getRandomFroggyQuote():
 	return random.choice(open(froggyQuotesPath).read().splitlines())
 
-def abilityCheck(message):
-		string = message.split()
-
-		arg1 = "!roll"
-		arg2 = "20"
-		arg3 = "0"
-		
-		# set modifier if we have one
-		try:
-			arg3 = string[1]
-		except IndexError:
-			# arg3 default sot zero
-			print("no modifer was provided")
-		
-		# isn't it cool that I'm not duplicating the code here anymore?
-		return rollDice(arg1 + " " + arg2 + " " + arg3)
-		
-def rollDice(message):
-	string = message.split()
-
-	if len(string) > 1:
-		dieSides = 20
-
-		try:
-			dieSides = int(string[1])
-		except IndexError:
-			dieSides = 20
-		
-		modifier = 0
-
-		try:
-			modifier = int(string[2])
-		except IndexError:
-			modifier = 0
-
-		roll = random.randint(1, dieSides)
-
-		naturalRoll = False
-
-		# natural roll is highest number without modifier
-		# e.g. 20
-		if roll == dieSides:
-			naturalRoll = True
-		else:
-			if modifier == 0:
-				if roll == 1:
-					naturalRoll = True
-			
-			roll += modifier
-
-			if roll > dieSides:
-				roll = dieSides
-
-		returnMessage = "nil"
-
-		if naturalRoll:
-			returnMessage = str(roll) + " natural"
-		else:
-			if modifier > 0:
-				returnMessage = str(roll) + " (mod: " + str(modifier) + ")"
-			else:
-				returnMessage = roll
-	else:
-		returnMessage = "please specify amount of sides"
-
-	return returnMessage
-
 def percent():
 	return random.randint(0, 100)
 
@@ -131,9 +69,9 @@ async def on_ready():
 		servers = list(client.servers)
 		for x in range(len(servers)):
 			channel = client.get_channel(getServerConfigOption(str(servers[x].id), 'BotHomeChannelID'))
-			await client.send_message(channel, "yea what's up? :white_check_mark: (v" + str(botVersion) + ")")
+			await channel.send("yea what's up? :white_check_mark: (v" + str(botVersion) + ")")
 	except Exception as exception:
-		await client.send_message(client.get_channel(botHomeChannelID), ":bangbang: Exception in on_ready: `" + exception.__class__.__name__ + '`:\n```' + str(exception) + "```")
+		await client.get_channel(botHomeChannelID).send(":bangbang: Exception in on_ready: `" + exception.__class__.__name__ + '`:\n```' + str(exception) + "```")
 		return
 
 @client.event
@@ -141,43 +79,45 @@ async def on_server_join(server):
 	try:
 		for c in server.channels:
 			if not c.type == discord.ChannelType.text:
-				if not c.permissions_for(server.me).send_messages:
+				if not c.permissions_for(server.me).sends:
 					continue
 				
-		#await client.send_message(c, "yea what's up? :white_check_mark:")
+		#await client.send(c, "yea what's up? :white_check_mark:")
 		
 	# TODO: include more information about server
 	except Exception as exception:
-		await client.send_message(client.get_channel(botHomeChannelID), ":bangbang: Exception in on_server_join: `" + exception.__class__.__name__ + '`:\n```' + str(exception) + "```" + "\nserver: " + server.id)
+		await client.get_channel(botHomeChannelID).send(":bangbang: Exception in on_server_join: `" + exception.__class__.__name__ + '`:\n```' + str(exception) + "```" + "\nserver: " + server.id)
 		return
 
 @client.event
 async def on_message(message):
 	try:
+		channel = message.channel
+
 		#try:
 		#	print(message.user.name + "#" + message.user.discriminator + ": " + message.message)
 		#except:
 		#	print(message.user.id + " does not want to be printed in the terminal!")
 			
 		if message.content.startswith(botCommandPrefix + "help"):
-			await client.send_message(message.channel, "List of commands:\n\n`!help` - this dialog.\n`!fcuk` - responds with a random frog quote\n`!roll` - rolls a dice with the specified number of sides\narguments:\nsides: number of sides on the die\nmodifier: DnD modifier\n`!check` - DnD skill check\ninternally calls `!roll 20 [modifier]`\n`!percent` - random percent between 0 and 100.\n`!setplaying` - sets the playing status for the bot\n\nfrogbot version " + str(botVersion))
-#			await client.send_message(message.channel, "List of commands:\n\n`!help` - this dialog.\n`!fcuk` - responds with a random frog quote\n`!roll` - rolls a dice with the specified number of sides\narguments:\nsides: number of sides on the die\nmodifier: DnD modifier\n`!check` - DnD skill check\ninternally calls `!roll 20 [modifier]`\n`!percent` - random percent between 0 and 100.\n`!setplaying` - sets the playing status for the bot\n`!restart` - restarts the bot\n\nfrogbot version " + str(botVersion))
+			await channel.send("List of commands:\n\n`!help` - this dialog.\n`!fcuk` - responds with a random frog quote\n`!roll` - rolls a dice with the specified number of sides\narguments:\nsides: number of sides on the die\nmodifier: DnD modifier\n`!check` - DnD skill check\ninternally calls `!roll 20 [modifier]`\n`!percent` - random percent between 0 and 100.\n`!setplaying` - sets the playing status for the bot\n\nfrogbot version " + str(botVersion))
+#			await client.send(message.channel, "List of commands:\n\n`!help` - this dialog.\n`!fcuk` - responds with a random frog quote\n`!roll` - rolls a dice with the specified number of sides\narguments:\nsides: number of sides on the die\nmodifier: DnD modifier\n`!check` - DnD skill check\ninternally calls `!roll 20 [modifier]`\n`!percent` - random percent between 0 and 100.\n`!setplaying` - sets the playing status for the bot\n`!restart` - restarts the bot\n\nfrogbot version " + str(botVersion))
 			return
 		elif message.content.startswith(botCommandPrefix + "fcuk"):
-			await client.send_message(message.channel, getRandomFroggyQuote())
+			await channel.send(getRandomFroggyQuote())
 			return
 	#	TODO: this
 	#	if message.content.startswith(botCommandPrefix + "sins"):
-	#		await client.send_message(message.channel, "I heard Minecraft?")
+	#		await client.send(message.channel, "I heard Minecraft?")
 	#		return
 		elif message.content.startswith(botCommandPrefix + "check"):
-			await client.send_message(message.channel, abilityCheck(message.content))
+			await message.channel.send(abilityCheck(message.content))
 			return
 		elif message.content.startswith(botCommandPrefix + "roll"):
-			await client.send_message(message.channel, rollDice(message.content))
+			await message.channel.send(rollDice(message.content))
 			return
 		elif message.content.startswith(botCommandPrefix + "percent"):
-			await client.send_message(message.channel, str(percent()) + "%")
+			await channel.send(str(percent()) + "%")
 			return
 	#	TODO: restrict this to admins
 	#	TODO: !setwatching
@@ -186,7 +126,7 @@ async def on_message(message):
 			string = message.content.split(' ', 1) # skip first word ("!setplaying")
 			
 			try:
-				await client.send_message(message.channel, "aye")
+				await channel.send("aye")
 				gameName = string[1]
 
 				if gameName == "none":
@@ -194,11 +134,11 @@ async def on_message(message):
 				else:
 					await client.change_presence(game=discord.Game(name=gameName, type=3))
 			except IndexError:
-				await client.send_message(message.channel, "no game name provided")
+				await channel.send("no game name provided")
 				
 			return
 #		else if message.content.startswith("!restart"):
-#			await client.send_message(message.channel, "bye bye :wave::skin-tone-2:")
+#			await client.send(message.channel, "bye bye :wave::skin-tone-2:")
 			
 #			os.fsync()
 			
@@ -206,9 +146,9 @@ async def on_message(message):
 #			sys.exit()
 #			return
 #		else:
-#			await client.send_message(message.channel, "what")
+#			await client.send(message.channel, "what")
 	except Exception as exception:
-		await client.send_message(message.channel, ":bangbang: Exception in on_message: `" + exception.__class__.__name__ + '`:\n```' + str(exception) + "```")
+		await channel.send(":bangbang: Exception in on_message: `" + exception.__class__.__name__ + '`:\n```' + str(exception) + "```")
 		return
 
 print("Starting with ", len(sys.argv), " arguments.")
